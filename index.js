@@ -1,5 +1,6 @@
 var express = require('express'); //import de la bibliothèque Express
 var app = express(); //instanciation d'une application Express
+const port = process.env.PORT || 8080;
 
 // Pour s'assurer que l'on peut faire des appels AJAX au serveur
 app.use(function (req, res, next) {
@@ -88,6 +89,6 @@ app.get('/msg/del/*', function (req, res) {
   }
 })
 
-app.listen(8080); //commence à accepter les requêtes
-console.log("App listening on port 8080...");
+app.listen(port); //commence à accepter les requêtes
+console.log("App listening on port " + port); //affiche un message dans la console
 
