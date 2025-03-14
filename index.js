@@ -16,7 +16,7 @@ app.get("/", function (req, res) {
 })
 
 app.get('/test/*', function (req, res) {
-  res.json({msg: req.url.split("/")[2]});
+  res.json({ msg: req.url.split("/")[2] });
 })
 
 
@@ -27,7 +27,7 @@ app.get('/cpt/inc*', function (req, res) {
     // Check if v is an integer
     let isInt = req.query.v.match(/^-{0,1}\d+$/);
     if (!isInt) {
-      res.json({code: -1, msg: "Invalid value"});
+      res.json({ code: -1, msg: "Invalid value" });
       return;
     }
     counter += parseInt(req.query.v);
@@ -35,11 +35,57 @@ app.get('/cpt/inc*', function (req, res) {
   else {
     counter++;
   }
-  res.json({code: 0});
+  res.json({ code: 0 });
 })
 
 app.get('/cpt/query', function (req, res) {
-  res.json({cpt: counter});
+  res.json({ cpt: counter });
+})
+
+// Messages API
+let allMsgs = [];
+
+app.get('/msg/get/*', function (req, res) {
+  let idx = req.url.split("/")[3];
+  if (!idx || !idx.match(/^\d+$/) || parseInt(idx) >= allMsgs.length) {
+    res.json({ code: 0 });
+  }
+  else {
+    res.json({ code: 1, msg: allMsgs[parseInt(idx)] });
+  }
+})
+
+app.get('/msg/nber', function (req, res) {
+  res.json({ code: 0, nber: allMsgs.length });
+})
+
+app.get('/msg/getAll', function (req, res) {
+  res.json({ code: 0, msgs: allMsgs });
+})
+
+app.get('/msg/post*', function (req, res) {
+  let newMsg = req.query;
+  if (!newMsg.pseudo || !newMsg.msg) {
+    res.json({ code: -1, msg: "Missing fields" });
+    return;
+  }
+  allMsgs.push({
+    pseudo: newMsg.pseudo,
+    time: new Date().toLocaleString(),
+    msg: newMsg.msg
+  });
+  res.json({ code: 0, id: allMsgs.length - 1 });
+})
+
+app.get('/msg/del/*', function (req, res) {
+  let idx = req.url.split("/")[3];
+  if (!idx || !idx.match(/^\d+$/) || parseInt(idx) >= allMsgs.length) {
+    res.json({ code: -1, msg: "Invalid index" });
+  }
+  else {
+    allMsgs.splice(parseInt(idx), 1);
+    res.json({ code: 0 });
+  }
 })
 
 app.listen(8080); //commence à accepter les requêtes
