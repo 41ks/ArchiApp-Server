@@ -19,6 +19,29 @@ app.get('/test/*', function (req, res) {
   res.json({msg: req.url.split("/")[2]});
 })
 
+
+// Counter
+let counter = 0;
+app.get('/cpt/inc*', function (req, res) {
+  if (req.query.v) {
+    // Check if v is an integer
+    let isInt = req.query.v.match(/^-{0,1}\d+$/);
+    if (!isInt) {
+      res.json({code: -1, msg: "Invalid value"});
+      return;
+    }
+    counter += parseInt(req.query.v);
+  }
+  else {
+    counter++;
+  }
+  res.json({code: 0});
+})
+
+app.get('/cpt/query', function (req, res) {
+  res.json({cpt: counter});
+})
+
 app.listen(8080); //commence à accepter les requêtes
 console.log("App listening on port 8080...");
 
