@@ -16,12 +16,13 @@ app.get("/", function (req, res) {
   res.send("Hello")
 })
 
+// Test route that returns the last part of the URL
 app.get('/test/*', function (req, res) {
   res.json({ msg: req.url.split("/")[2] });
 })
 
 
-// Counter
+// Counter API
 let counter = 0;
 app.get('/cpt/inc*', function (req, res) {
   if (req.query.v) {
